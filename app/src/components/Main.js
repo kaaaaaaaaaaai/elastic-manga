@@ -5,6 +5,9 @@ import { FormControl, FormLabel, FormControlLabel } from 'material-ui/Form';
 import Grid from 'material-ui/Grid';
 import Radio, { RadioGroup } from 'material-ui/Radio';
 import Paper from 'material-ui/Paper';
+import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
+import Button from 'material-ui/Button';
+import Typography from 'material-ui/Typography';
 
 const styles = theme => ({
     root: {
@@ -20,138 +23,123 @@ const styles = theme => ({
     control: {
         padding: theme.spacing.unit * 2,
     },
+    card: {
+        maxWidth: 345,
+    },
+    media: {
+        height: 200,
+    }
 });
 
 
-class Main extends Component {
+class Main extends React.Component {
 
     constructor(props){
         super(props)
-        this.state = {
-            direction: 'row',
-            justify: 'center',
-            alignItems: 'center',
-        };
         this.handleChange = this.handleChange.bind(this)
+        this.state = {
+            data: []
+        }
     }
 
-    handleChange = key => (event, value) => {
-        this.setState({
-            [key]: value,
-        });
+    handleChange(event){
+        console.log(event.target.value)
+        console.log("call API")
+        var arr = [
+            {
+                img_url:"https://i0.wp.com/solife-a.com/wp-content/uploads/2015/04/%E3%82%88%E3%81%A4%E3%81%B0%E3%81%A8%EF%BC%81.jpg?fit=315%2C291"
+            },{
+                img_url:"https://lh3.googleusercontent.com/-Hhd085ONnYI/VvIyEID8OlI/AAAAAAAAA2w/3WPb-KMHZEk/Yotsuba.png?imgmax=1600"
+            },{
+                img_url:"http://livedoor.blogimg.jp/jin115/imgs/0/2/022379f3.jpg"
+            },{
+                img_url:"http://cached2.static.festy.jp/thumbnail/?mediaPath=festy_production%2F2015%2F11%2F21%2F07%2F46%2F08%2F758%2Frzn1ssx.jpg&width=620&height&sha=8036a093e155cc5c784c21c4911819d1cd86ec60"
+            },{
+                img_url:"http://blogimg.goo.ne.jp/user_image/71/33/a738433ee6c87dd65d22ba8af074fff8.jpg"
+            },
+        ]
+        this.setState({data:this.random(arr, 3)})
     };
+
+    random(array, num) {
+        var a = array;
+        var t = [];
+        var r = [];
+        var l = a.length;
+        var n = num < l ? num : l;
+        while (n-- > 0) {
+            var i = Math.random() * l | 0;
+            r[n] = t[i] || a[i];
+            --l;
+            t[i] = t[l] || a[l];
+        }
+        return r;
+    }
 
 
     render() {
         const { classes } = this.props;
-        const { alignItems, direction, justify } = this.state;
+
+        const cards = this.state.data.map(function(_data, index){
+            return (
+                <Grid item md={4} sm={4} xs={4} key={index}>
+                <Card className={classes.card}>
+                <CardMedia
+                    className={classes.media}
+                    image={_data.img_url}
+                    title="Contemplative Reptile"
+                />
+                {/*<CardContent>*/}
+                    {/*<Typography variant="headline" component="h2">*/}
+                        {/*Lizard*/}
+                    {/*</Typography>*/}
+                    {/*<Typography component="p">*/}
+                        {/*Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging*/}
+                        {/*across all continents except Antarctica*/}
+                    {/*</Typography>*/}
+                {/*</CardContent>*/}
+                <CardActions>
+                    <Button size="small" color="primary">
+                        Share
+                    </Button>
+                    <Button size="small" color="primary">
+                        Learn More
+                    </Button>
+                </CardActions>
+            </Card>
+                </Grid>
+                    )
+        });
         return (
             <Grid container className={classes.root}>
-                <Grid item xs={12}>
+                <Grid item xs={12} md={12} lg={12}>
                     <Grid
                         container
                         className={classes.demo}
-                        alignItems={alignItems}
-                        direction={direction}
-                        justify={justify}
+                        alignItems="center"
+                        justify="center"
                     >
-                        {[0, 1, 2].map(value => (
-                            <Grid key={value} item>
+                            <Grid item>
                                 <Paper
                                     className={classes.paper}
-                                    style={{ paddingTop: (value + 1) * 10, paddingBottom: (value + 1) * 10 }}
                                 >
-                                    {`Cell ${value + 1}`}
+                                    <FormControl fullWidth className={classes.formControl}>
+                                        <InputLabel htmlFor="amount">Search</InputLabel>
+                                        <Input
+                                            id="adornment-amount"
+                                            onChange={this.handleChange}
+                                        />
+                                    </FormControl>
                                 </Paper>
                             </Grid>
-                        ))}
                     </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                    <Paper className={classes.control}>
-                        <Grid container>
-                            <Grid item xs={6} sm={4}>
-                                <FormControl component="fieldset">
-                                    <FormLabel>direction</FormLabel>
-                                    <RadioGroup
-                                        name="direction"
-                                        aria-label="direction"
-                                        value={direction}
-                                        onChange={this.handleChange('direction')}
-                                    >
-                                        <FormControlLabel value="row" control={<Radio />} label="row" />
-                                        <FormControlLabel value="row-reverse" control={<Radio />} label="row-reverse" />
-                                        <FormControlLabel value="column" control={<Radio />} label="column" />
-                                        <FormControlLabel
-                                            value="column-reverse"
-                                            control={<Radio />}
-                                            label="column-reverse"
-                                        />
-                                    </RadioGroup>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={6} sm={4}>
-                                <FormControl component="fieldset">
-                                    <FormLabel>justify</FormLabel>
-                                    <RadioGroup
-                                        name="justify"
-                                        aria-label="justify"
-                                        value={justify}
-                                        onChange={this.handleChange('justify')}
-                                    >
-                                        <FormControlLabel value="flex-start" control={<Radio />} label="flex-start" />
-                                        <FormControlLabel value="center" control={<Radio />} label="center" />
-                                        <FormControlLabel value="flex-end" control={<Radio />} label="flex-end" />
-                                        <FormControlLabel
-                                            value="space-between"
-                                            control={<Radio />}
-                                            label="space-between"
-                                        />
-                                        <FormControlLabel
-                                            value="space-around"
-                                            control={<Radio />}
-                                            label="space-around"
-                                        />
-                                    </RadioGroup>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={6} sm={4}>
-                                <FormControl component="fieldset">
-                                    <FormLabel>alignItems</FormLabel>
-                                    <RadioGroup
-                                        name="alignItems"
-                                        aria-label="alignItems"
-                                        value={alignItems}
-                                        onChange={this.handleChange('alignItems')}
-                                    >
-                                        <FormControlLabel value="flex-start" control={<Radio />} label="flex-start" />
-                                        <FormControlLabel value="center" control={<Radio />} label="center" />
-                                        <FormControlLabel value="flex-end" control={<Radio />} label="flex-end" />
-                                        <FormControlLabel value="stretch" control={<Radio />} label="stretch" />
-                                        <FormControlLabel value="baseline" control={<Radio />} label="baseline" />
-                                    </RadioGroup>
-                                </FormControl>
-                            </Grid>
-                        </Grid>
-                    </Paper>
+                <Grid container>
+                    {cards}
                 </Grid>
             </Grid>
-            // <div>
-            //     {/*search bar*/}
-            //     <div>
-            //         <FormControl fullWidth className={classes.formControl}>
-            //             <InputLabel htmlFor="amount">Amount</InputLabel>
-            //             <Input
-            //                 id="adornment-amount"
-            //                 value="aaa"
-            //                 onChange="aaa"
-            //                 startAdornment={<InputAdornment position="start">ケンサクケンサクゥ</InputAdornment>}
-            //             />
-            //         </FormControl>
-            //     </div>
-            //     {/* result box */}
-            // </div>
-        );
+        )
+
     }
 }
 

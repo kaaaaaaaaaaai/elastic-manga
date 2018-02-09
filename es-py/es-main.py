@@ -11,7 +11,12 @@ def main():
 
     for data in json["data"].iteritems():
         pprint(data[1]["image_url"])
-        #es.index
+        d = {
+		"image_url":data[1]["image_url"],
+		"tags": data[1]["plane_tags"],
+                "plane_tags": data[1]["plane_tags"]
+        }
+        pprint(es.index(index="prod", doc_type="image", body=d))
 
 
 

@@ -7,7 +7,10 @@ import Radio, { RadioGroup } from 'material-ui/Radio';
 import Paper from 'material-ui/Paper';
 import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
 import Button from 'material-ui/Button';
+import axios from "axios"
 import Typography from 'material-ui/Typography';
+import { Link } from 'react-router-dom'
+
 
 const styles = theme => ({
     root: {
@@ -31,6 +34,7 @@ const styles = theme => ({
     }
 });
 
+const s3 = "https://s3-ap-northeast-1.amazonaws.com/manga-one";
 
 class Main extends React.Component {
 
@@ -40,41 +44,60 @@ class Main extends React.Component {
         this.state = {
             data: []
         }
+        this.getAll()
     }
-
+    getAll(){
+        var query = {
+            "size": 10
+        };
+        axios.get("http://localhost:9200/prod/image/_search", {
+            params: {
+                source: JSON.stringify(query),
+                source_content_type: 'application/json'
+            }
+        }).then((res) => {
+            console.log(res)
+            console.log(res.data.hits.hits);
+            this.setState({data :res.data.hits.hits})
+        });
+    }
     handleChange(event){
         console.log(event.target.value)
         console.log("call API")
-        var arr = [
-            {
-                img_url:"https://i0.wp.com/solife-a.com/wp-content/uploads/2015/04/%E3%82%88%E3%81%A4%E3%81%B0%E3%81%A8%EF%BC%81.jpg?fit=315%2C291"
-            },{
-                img_url:"https://lh3.googleusercontent.com/-Hhd085ONnYI/VvIyEID8OlI/AAAAAAAAA2w/3WPb-KMHZEk/Yotsuba.png?imgmax=1600"
-            },{
-                img_url:"http://livedoor.blogimg.jp/jin115/imgs/0/2/022379f3.jpg"
-            },{
-                img_url:"http://cached2.static.festy.jp/thumbnail/?mediaPath=festy_production%2F2015%2F11%2F21%2F07%2F46%2F08%2F758%2Frzn1ssx.jpg&width=620&height&sha=8036a093e155cc5c784c21c4911819d1cd86ec60"
-            },{
-                img_url:"http://blogimg.goo.ne.jp/user_image/71/33/a738433ee6c87dd65d22ba8af074fff8.jpg"
-            },
-        ]
-        this.setState({data:this.random(arr, 3)})
-    };
-
-    random(array, num) {
-        var a = array;
-        var t = [];
-        var r = [];
-        var l = a.length;
-        var n = num < l ? num : l;
-        while (n-- > 0) {
-            var i = Math.random() * l | 0;
-            r[n] = t[i] || a[i];
-            --l;
-            t[i] = t[l] || a[l];
+        var query = {
+            "query": {
+                "constant_score": {
+                    "filter": {
+                        "bool": {
+                            "should": [
+                                {
+                                    "term": {
+                                        "tags.keyword": event.target.value
+                                    }
+                                },
+                                {
+                                    "wildcard": {
+                                        "plane_tags.keyword": `*${event.target.value}*`
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
-        return r;
-    }
+        console.log(query)
+        axios.get("http://localhost:9200/prod/image/_search", {
+            params: {
+                source: JSON.stringify(query),
+                source_content_type: 'application/json'
+            }
+        }).then((res) => {
+            console.log(res)
+            console.log(res.data.hits.hits);
+            this.setState({data :res.data.hits.hits})
+        });
+    };
 
 
     render() {
@@ -86,25 +109,15 @@ class Main extends React.Component {
                 <Card className={classes.card}>
                 <CardMedia
                     className={classes.media}
-                    image={_data.img_url}
+                    image={`${s3}/thumbnails/${_data._id}.${_data._source.extension}`}
                     title="Contemplative Reptile"
                 />
-                {/*<CardContent>*/}
-                    {/*<Typography variant="headline" component="h2">*/}
-                        {/*Lizard*/}
-                    {/*</Typography>*/}
-                    {/*<Typography component="p">*/}
-                        {/*Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging*/}
-                        {/*across all continents except Antarctica*/}
-                    {/*</Typography>*/}
-                {/*</CardContent>*/}
                 <CardActions>
-                    <Button size="small" color="primary">
-                        Share
-                    </Button>
-                    <Button size="small" color="primary">
-                        Learn More
-                    </Button>
+                    <Link to={{pathname:`/images/${_data._id}`, state:_data}}>
+                        <Button variant="raised" fullWidth={true} color="primary">
+                            get Share URL
+                        </Button>
+                    </Link>
                 </CardActions>
             </Card>
                 </Grid>
@@ -123,7 +136,7 @@ class Main extends React.Component {
                                 <Paper
                                     className={classes.paper}
                                 >
-                                    <FormControl fullWidth className={classes.formControl}>
+                                    <FormControl className={classes.formControl}>
                                         <InputLabel htmlFor="amount">Search</InputLabel>
                                         <Input
                                             id="adornment-amount"

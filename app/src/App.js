@@ -13,6 +13,10 @@ import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Main from "./components/Main";
+import { BrowserRouter as Router, Route, Link , Switch} from 'react-router-dom'
+
+import Detail from "./components/Detail"
+
 
 const theme = createMuiTheme({
     palette: createPalette({
@@ -30,23 +34,29 @@ const styles = {
 
 class App extends Component {
     render() {
-    const { classes } = this.props;
+    const { classes, history } = this.props;
     return (
-        <MuiThemeProvider theme={theme}>
-            <div className="App">
-                <div className={classes.root}>
-                    <AppBar position="static" color="primary">
-                        <Toolbar>
-                            <Typography variant="title" color="inherit">
-                                1 piece
-                            </Typography>
-                        </Toolbar>
-                    </AppBar>
+        <Router history={history}>
+            <MuiThemeProvider theme={theme}>
+                <div className="App">
+                    <div className={classes.root}>
+                        <AppBar position="static" color="primary">
+                            <Toolbar>
+                                <Typography variant="title" color="inherit">
+                                    漫画1コマ検索
+                                </Typography>
+                            </Toolbar>
+                        </AppBar>
+                    </div>
+                    <div>
+                        <Switch>
+                            <Route exact path='/' component={Main} />
+                            <Route path='/images/:id' component={Detail} />
+                        </Switch>
+                    </div>
                 </div>
-
-                <Main />
-            </div>
-        </MuiThemeProvider>
+            </MuiThemeProvider>
+        </Router>
     );
   }
 }

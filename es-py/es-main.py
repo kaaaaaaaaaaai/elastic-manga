@@ -10,13 +10,12 @@ def main():
     es = Elasticsearch("http://localhost:9200")
 
     for data in json["data"].iteritems():
-        pprint(data[1]["image_url"])
         d = {
-		"image_url":data[1]["image_url"],
-		"tags": data[1]["plane_tags"],
-                "plane_tags": data[1]["plane_tags"]
+            "extension":data[1]["extension"],
+            "tags": data[1]["tags"],
+            "plane_tags": data[1]["tags"]
         }
-        pprint(es.index(index="prod", doc_type="image", body=d))
+        pprint(es.index(index="prod", doc_type="image", id= data[1]["id"], body=d))
 
 
 

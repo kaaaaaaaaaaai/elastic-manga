@@ -2,46 +2,49 @@
   "settings": {
     "index": {
       "analysis": {
-                "analyzer": {
-        "my_ja_analyzer": {
-          "type":      "custom",
-          "tokenizer": "kuromoji_tokenizer",
-          "char_filter": [
-            "icu_normalizer",
-            "kuromoji_iteration_mark"
-          ],
-          "filter": [
-            "kuromoji_baseform",
-            "kuromoji_part_of_speech",
-            "ja_stop",
-            "kuromoji_number",
-            "kuromoji_stemmer"
-          ]
+        "analyzer": {
+          "my_ja_analyzer": {
+            "type":      "custom",
+            "tokenizer": "kuromoji_tokenizer",
+            "char_filter": [
+              "icu_normalizer",
+              "kuromoji_iteration_mark"
+            ],
+            "filter": [
+              "kuromoji_baseform",
+              "kuromoji_part_of_speech",
+              "ja_stop",
+              "kuromoji_number",
+              "kuromoji_stemmer"
+            ]
+          }
         }
-      }
       }
     }
   },
   "mappings": {
     "extended_publish_articles": {
       "dynamic": "strict",
-      "properties": {
-        "image_id": {
+      "properties":{
+        "id": {
           "type": "integer"
         },
-        "image_url": {
+        "extension": {
           "type": "text",
-	  "index": "not_analyzed"
+          "index": "not_analyzed"
         },
         "tags": {
           "type": "text",
           "analyzer": "my_ja_analyzer",
           "fielddata": true
-	  
+
         },
-"plane_tags": {
+        "plane_tags": {
           "type": "text",
-	  "index": "not_analyzed",
-"fielddata": true
+          "index": "not_analyzed",
+          "fielddata": true
+        }
+      }
+    }
+  }
 }
-}}}}

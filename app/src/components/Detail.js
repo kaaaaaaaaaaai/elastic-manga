@@ -65,12 +65,14 @@ class Detail extends React.Component{
             <Grid container>
                 <Helmet title={'sambaiz.net'}
                         meta={[
-                            {"name": "twitter:card", "content": "summary"},
-                            {"name": "twitter:title", "content": "漫画1コマ検索"},
+                            {"name": "twitter:card", "content": "photo"},
+                            {"name": "twitter:title", "content": "漫画1コマ検索 / a"},
                             {"name": "twitter:description", "content": "漫画1コマ検索"},
-                            {"property": "og:title", "content": "漫画1コマ検索"},
-                            {"property": "og:type", "content": "blog"},
-                            {"property": "og:image", "content": "http://d2wgaf7ubdj1mv.cloudfront.net/my.jpg"},
+                            {"property": "og:site_name", "content": "漫画1コマ検索/ a"},
+                            {"property": "og:description", "content": "漫画1コマ検索/ a"},
+                            {"property": "og:title", "content": "漫画1コマ検索/ a"},
+                            {"property": "og:type", "content": "article"},
+                            {"property": "og:image", "content": `${s3}/ogp/${this.state._id}.${this.state._source.extension}`},
                             {"property": "og:url", "content": window.location.href}
                         ]}
                 />

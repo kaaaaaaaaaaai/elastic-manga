@@ -87,7 +87,7 @@ class Main extends React.Component {
             }
         }
         console.log(query)
-        axios.get("https://search-manga-image-sdozidc55hog2xc6ryonyshlja.ap-northeast-1.es.amazonaws.com/image/_search", {
+        axios.get("https://search-manga-image-sdozidc55hog2xc6ryonyshlja.ap-northeast-1.es.amazonaws.com/prod/image/_search", {
             params: {
                 source: JSON.stringify(query),
                 source_content_type: 'application/json'

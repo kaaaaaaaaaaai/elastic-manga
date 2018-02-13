@@ -7,7 +7,7 @@ def main():
     json = pd.read_json("./document.json")
     pprint(json["data"])
 
-    es = Elasticsearch("http://localhost:9200")
+    es = Elasticsearch("https://search-manga-image-sdozidc55hog2xc6ryonyshlja.ap-northeast-1.es.amazonaws.com")
 
     for data in json["data"].iteritems():
         d = {

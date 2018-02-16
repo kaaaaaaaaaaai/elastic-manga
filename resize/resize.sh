@@ -5,11 +5,12 @@ for file in `ls ./input/`; do
 	WIDTH=$(sips -g pixelHeight -g pixelWidth ./input/${file} | grep pixelWidth | awk '{print $2}')
 	echo $HEIGHT;
 	echo $WIDTH;
-	if [ $HEIGHT -gt $WIDTH ]; then
-	    echo "縦長"
-        ffmpeg -y -i ./input/${file} -vf "pad=${HEIGHT}:0:(ow-iw)/2:0:white" ./output/${file}
-    else
-        echo "横長"
-        ffmpeg -y -i ./input/${file} -vf "pad=0:${WIDTH}:0:(oh-ih)/2:white" ./output/${file}
+	DH=`expr 2 \* $HEIGHT`
+	echo $DH
+	if [ $DH -lt $WIDTH ] ; then
+	    ffmpeg -y -i ./input/${file} -vf "pad='if(gt((iw/2)-ih, 0),300,(ih*2))':0:(ow-iw)/2:0:white" ./output3/${file}
+	    continue
     fi
+
+	ffmpeg -y -i ./input/${file} -vf "pad=(ih*2):0:(ow-iw)/2:0:white" ./output2/${file}
 done
